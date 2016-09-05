@@ -1,4 +1,4 @@
-package com.woyi.mhub.support;
+package com.woyi.mhub.task.util;
 
 /**
  * 返回消息

@@ -32,11 +32,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.woyi.mhub.support.ResultMsg;
 import com.woyi.mhub.task.domain.JobGroup;
 import com.woyi.mhub.task.domain.JobTaskDetail;
 import com.woyi.mhub.task.domain.ScheduleJob;
 import com.woyi.mhub.task.service.JobTaskService;
+import com.woyi.mhub.task.util.ResultMsg;
 
 /** 
  * @ClassName  JobTaskController 

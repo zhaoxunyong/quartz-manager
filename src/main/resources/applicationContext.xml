@@ -14,8 +14,6 @@
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 
-	<bean id="springUtils" class="com.woyi.mhub.support.spring.SpringUtils" />
-
 	<import resource="applicationContext-scheduling.xml"/>
 
 	<!-- 引入属性文件 -->

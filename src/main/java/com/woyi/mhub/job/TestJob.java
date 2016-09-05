@@ -6,7 +6,7 @@ import org.quartz.SchedulerContext;
 import org.quartz.SchedulerException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import com.woyi.mhub.support.DateUtil;
+import com.woyi.mhub.task.util.DateUtil;
 
 
 public class TestJob extends QuartzJobBean{
