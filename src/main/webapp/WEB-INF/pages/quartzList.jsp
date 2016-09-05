@@ -51,10 +51,10 @@
 							<td>${job.description}</td>
 							<td>${job.trigger.cronExpression}</td>
 							<td>
-								<fmt:formatDate value="${job.trigger.nextFireTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+								<fmt:formatDate value="${job.trigger.previousFireTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 							</td>
 							<td>
-								<fmt:formatDate value="${job.trigger.previousFireTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+								<fmt:formatDate value="${job.trigger.nextFireTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 							</td>
 							<td>
 								<c:if test="${job.status == 'NORMAL'}">
@@ -94,5 +94,37 @@
 		<div style="text-align: center;" ><h2>暂无任务。。。</h2></div>
 		</c:if>
 	</div>
+<script type="text/javascript">
+	
+	function pauseJob(id, status){
+		var msg = "";
+		if(status == 1){
+			msg = "暂停";
+		}else if(status == 0){
+			msg = "启动";
+		}else{
+			return;
+		}
+		$.ajax({
+				url : "../jobTask/pauseJob",
+				dataType : "json",
+				type : "post",
+				data : {jobId:id,status:status},
+				success : function(data) {
+					if (data.flag == true) {
+						toastr.success(msg+"成功");
+					}else{
+						toastr.error(data.msg,msg+"失败");
+					}
+					setTimeout("location.reload();",1000); 
+				},
+				error : function() {
+					toastr.error(msg+"失败");
+				}
+			});
+	
+	}
+
+</script>
 </body>
 </html>

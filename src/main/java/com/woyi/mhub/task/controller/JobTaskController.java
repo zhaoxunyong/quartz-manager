@@ -12,26 +12,20 @@
 package com.woyi.mhub.task.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
-import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
-import org.quartz.Trigger.TriggerState;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.woyi.mhub.task.domain.JobGroup;
 import com.woyi.mhub.task.domain.JobTaskDetail;
 import com.woyi.mhub.task.domain.ScheduleJob;
@@ -113,6 +107,13 @@ public class JobTaskController {
 		return "add";
 	}
 	
+	@RequestMapping("showEdit")
+	public String showEdit(HttpServletRequest request,String jobId){
+		ScheduleJob job = taskService.getTaskById(jobId);
+		request.setAttribute("job", job);
+		return "edit";
+	}
+	
 	@RequestMapping("doAdd")
 	@ResponseBody
 	public ResultMsg doAdd(HttpServletRequest request, ScheduleJob scheduleJob) {
@@ -167,7 +168,7 @@ public class JobTaskController {
 	
 	@RequestMapping("changeStatus")
 	@ResponseBody
-	public ResultMsg changeStatus(HttpServletRequest request, Long jobId, String status){
+	public ResultMsg changeStatus(HttpServletRequest request, String jobId, String status){
 		ResultMsg resultMsg = new ResultMsg();
 		resultMsg.setFlag(false);
 		try {
@@ -179,6 +180,25 @@ public class JobTaskController {
 		return resultMsg;
 	}
 	
+	
+	@RequestMapping("pauseJob")
+	@ResponseBody
+	public ResultMsg pauseJob(HttpServletRequest request, String jobId, String status){
+		ResultMsg resultMsg = new ResultMsg();
+		resultMsg.setFlag(false);
+		try {
+			ScheduleJob job = taskService.getTaskById(jobId);
+			if (ScheduleJob.STATUS_NOT_RUNNING.equals(status)) {
+				taskService.resumeJob(job); //恢复
+			} else if (ScheduleJob.STATUS_RUNNING.equals(status)) {
+				taskService.pauseJob(job); //暂停
+			}
+			resultMsg.setFlag(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resultMsg;
+	}
 	
 
 }

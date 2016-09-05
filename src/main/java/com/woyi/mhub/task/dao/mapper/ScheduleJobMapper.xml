@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.woyi.mhub.task.dao.ScheduleJobMapper">
 	<resultMap id="BaseResultMap" type="com.woyi.mhub.task.domain.ScheduleJob">
-		<id column="job_id" property="jobId" jdbcType="BIGINT" />
+		<id column="job_id" property="jobId" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
 		<result column="job_name" property="jobName" jdbcType="VARCHAR" />
@@ -11,29 +11,28 @@
 		<result column="cron_expression" property="cronExpression" jdbcType="VARCHAR" />
 		<result column="description" property="description" jdbcType="VARCHAR" />
 		<result column="bean_class" property="beanClass" jdbcType="VARCHAR" />
-		<result column="is_concurrent" property="isConcurrent" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		job_id, create_time, update_time, job_name, job_group, job_status, cron_expression,
-		description, bean_class, is_concurrent
+		description, bean_class
 	</sql>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
 		select <include refid="Base_Column_List" />
 		from task_schedule_job
-		where job_id = #{jobId,jdbcType=BIGINT}
+		where job_id = #{jobId,jdbcType=VARCHAR}
 	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from task_schedule_job
-		where job_id = #{jobId,jdbcType=BIGINT}
+		where job_id = #{jobId,jdbcType=VARCHAR}
 	</delete>
 	<insert id="insert" parameterType="com.woyi.mhub.task.domain.ScheduleJob">
 		insert into task_schedule_job 
-		( job_id, create_time, update_time, job_name, job_group, job_status, cron_expression, description, bean_class, is_concurrent )
+		( job_id, create_time, update_time, job_name, job_group, job_status, cron_expression, description, bean_class )
 		
 		values 
-		( #{jobId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+		( #{jobId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
 		#{jobName,jdbcType=VARCHAR}, #{jobGroup,jdbcType=VARCHAR}, #{jobStatus,jdbcType=VARCHAR},
-		#{cronExpression,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{beanClass,jdbcType=VARCHAR}, #{isConcurrent,jdbcType=VARCHAR}
+		#{cronExpression,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{beanClass,jdbcType=VARCHAR}
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.woyi.mhub.task.domain.ScheduleJob">
@@ -66,13 +65,10 @@
 			<if test="beanClass != null">
 				bean_class,
 			</if>
-			<if test="isConcurrent != null">
-				is_concurrent,
-			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="jobId != null">
-				#{jobId,jdbcType=BIGINT},
+				#{jobId,jdbcType=VARCHAR},
 			</if>
 			<if test="createTime != null">
 				#{createTime,jdbcType=TIMESTAMP},
@@ -97,9 +93,6 @@
 			</if>
 			<if test="beanClass != null">
 				#{beanClass,jdbcType=VARCHAR},
-			</if>
-			<if test="isConcurrent != null">
-				#{isConcurrent,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -130,11 +123,8 @@
 			<if test="beanClass != null">
 				bean_class = #{beanClass,jdbcType=VARCHAR},
 			</if>
-			<if test="isConcurrent != null">
-				is_concurrent = #{isConcurrent,jdbcType=VARCHAR},
-			</if>
 		</set>
-		where job_id = #{jobId,jdbcType=BIGINT}
+		where job_id = #{jobId,jdbcType=VARCHAR}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.woyi.mhub.task.domain.ScheduleJob">
 		update task_schedule_job
@@ -145,9 +135,8 @@
 		job_status = #{jobStatus,jdbcType=VARCHAR},
 		cron_expression = #{cronExpression,jdbcType=VARCHAR},
 		description = #{description,jdbcType=VARCHAR},
-		bean_class = #{beanClass,jdbcType=VARCHAR},
-		is_concurrent = #{isConcurrent,jdbcType=VARCHAR}
-		where job_id = #{jobId,jdbcType=BIGINT}
+		bean_class = #{beanClass,jdbcType=VARCHAR}
+		where job_id = #{jobId,jdbcType=VARCHAR}
 	</update>
 	<select id="getAll" resultMap="BaseResultMap">
 		select <include refid="Base_Column_List" />

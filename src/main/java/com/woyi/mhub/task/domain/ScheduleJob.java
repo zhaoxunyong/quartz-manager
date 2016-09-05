@@ -12,7 +12,7 @@ public class ScheduleJob {
 	public static final String CONCURRENT_IS = "1";
 	public static final String CONCURRENT_NOT = "0";
 	
-	private Long jobId; //任务id
+	private String jobId; //任务id
 	private String jobName; //任务名称
 	private String jobGroup; //任务分组
 	private Date createTime; //创建时间
@@ -24,13 +24,11 @@ public class ScheduleJob {
 	
 	private String beanClass; //任务类
 	
-	private String isConcurrent; //任务是否有状态
-	
-	public Long getJobId() {
+	public String getJobId() {
 		return jobId;
 	}
 
-	public void setJobId(Long jobId) {
+	public void setJobId(String jobId) {
 		this.jobId = jobId;
 	}
 
@@ -98,11 +96,4 @@ public class ScheduleJob {
 		this.beanClass = beanClass;
 	}
 
-	public String getIsConcurrent() {
-		return isConcurrent;
-	}
-
-	public void setIsConcurrent(String isConcurrent) {
-		this.isConcurrent = isConcurrent;
-	}
 }

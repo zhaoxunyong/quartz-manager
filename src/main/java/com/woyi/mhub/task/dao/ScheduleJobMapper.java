@@ -5,13 +5,13 @@ import java.util.List;
 import com.woyi.mhub.task.domain.ScheduleJob;
 
 public interface ScheduleJobMapper {
-	int deleteByPrimaryKey(Long jobId);
+	int deleteByPrimaryKey(String jobId);
 
 	int insert(ScheduleJob record);
 
 	int insertSelective(ScheduleJob record);
 
-	ScheduleJob selectByPrimaryKey(Long jobId);
+	ScheduleJob selectByPrimaryKey(String jobId);
 
 	int updateByPrimaryKeySelective(ScheduleJob record);
 

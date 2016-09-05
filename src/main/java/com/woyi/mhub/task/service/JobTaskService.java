@@ -46,29 +46,34 @@ public class JobTaskService {
 		scheduleJobMapper.insertSelective(job);
 	}
 
-	public ScheduleJob getTaskById(Long jobId) {
+	public ScheduleJob getTaskById(String jobId) {
 		return scheduleJobMapper.selectByPrimaryKey(jobId);
 	}
 
 	/**
 	 * 更改任务状态
+	 * @return 
 	 */
-	public void changeStatus(Long jobId, String status) throws SchedulerException {
+	public boolean changeStatus(String jobId, String status) throws SchedulerException {
 		ScheduleJob job = getTaskById(jobId);
 		if (job == null) {
-			return;
+			return false;
 		}
+		boolean flag = true;
 		if (ScheduleJob.STATUS_NOT_RUNNING.equals(status)) {
 			//暂停job
-			deleteJob(job);
+			flag = deleteJob(job);
 			job.setJobStatus(ScheduleJob.STATUS_NOT_RUNNING);
 		} else if (ScheduleJob.STATUS_RUNNING.equals(status)) {
 			job.setJobStatus(ScheduleJob.STATUS_RUNNING);
 			//开启job
-			addJob(job);
+			flag = addJob(job);
 		}
-		job.setUpdateTime(new Date());
-		scheduleJobMapper.updateByPrimaryKeySelective(job);
+		if(flag){
+			job.setUpdateTime(new Date());
+			scheduleJobMapper.updateByPrimaryKeySelective(job);
+		}
+		return flag;
 	}
 	
 	
@@ -82,10 +87,11 @@ public class JobTaskService {
 	* @param job
 	* @return void    返回类型
 	* @version: 2016年9月2日 下午4:16:58
+	 * @return 
 	 */
-	public void addJob(ScheduleJob job){
+	public boolean addJob(ScheduleJob job){
 		if (job == null || !ScheduleJob.STATUS_RUNNING.equals(job.getJobStatus())) {
-			return;
+			return false;
 		}
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
 			
@@ -96,40 +102,39 @@ public class JobTaskService {
 			jobDetail = scheduler.getJobDetail(jobKey);
 		} catch (SchedulerException e) {
 			e.printStackTrace();
+			return false;
 		}
 		if(null == jobDetail){ //无记录，添加job
 			logger.info("开始添加任务... "+ job.getJobName());
 			//构建job实例
 			Class clazz = null;
 			Object obj = null;
-			boolean flag = true;
 			try {
 				clazz = Class.forName(job.getBeanClass());
 				obj = clazz.newInstance();
 			} catch (Exception e) {
-				flag = false;
 				e.printStackTrace();
 				logger.error("请检查任务类... "+ job.getBeanClass());
+				return false;
 			}
 			if(obj != null){
 				//判断是否实现 org.quartz.Job 
 				if(!(obj instanceof Job)){
-					flag = false;
 					logger.error("任务类... "+ job.getBeanClass() + " 不符合规范");
+					return false;
 				}
 			}
-			if(flag){ //配置正常
-				jobDetail = JobBuilder.newJob(clazz).withIdentity(job.getJobName(), job.getJobGroup()).withDescription(job.getDescription()).build();
-				CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCronExpression());
+			jobDetail = JobBuilder.newJob(clazz).withIdentity(job.getJobName(), job.getJobGroup()).withDescription(job.getDescription()).build();
+			CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCronExpression());
 
-				
-				CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(job.getJobName(), job.getJobGroup()).withSchedule(scheduleBuilder).build();
-				try {
-					scheduler.scheduleJob(jobDetail, trigger);
-				} catch (SchedulerException e) {
-					e.printStackTrace();
-					logger.error("任务... "+ job.getJobName() + " 启动失败");
-				}
+			
+			CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(job.getJobName(), job.getJobGroup()).withSchedule(scheduleBuilder).build();
+			try {
+				scheduler.scheduleJob(jobDetail, trigger);
+			} catch (SchedulerException e) {
+				e.printStackTrace();
+				logger.error("任务... "+ job.getJobName() + " 启动失败");
+				return false;
 			}
 			
 		}else{ //任务已存在
@@ -149,9 +154,10 @@ public class JobTaskService {
 			} catch (SchedulerException e) {
 				e.printStackTrace();
 				logger.error("任务... "+ job.getJobName() + " 触发器更新失败");
+				return false;
 			}
-			
 		}
+		return true;
 	}
 	
 
@@ -199,10 +205,16 @@ public class JobTaskService {
 	* @return void    返回类型
 	* @version: 2016年9月2日 下午5:34:50
 	 */
-	public void deleteJob(ScheduleJob scheduleJob) throws SchedulerException {
+	public boolean deleteJob(ScheduleJob scheduleJob){
 		Scheduler scheduler = schedulerFactoryBean.getScheduler();
 		JobKey jobKey = JobKey.jobKey(scheduleJob.getJobName(), scheduleJob.getJobGroup());
-		scheduler.deleteJob(jobKey);
+		try {
+			scheduler.deleteJob(jobKey);
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	

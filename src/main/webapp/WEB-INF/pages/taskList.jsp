@@ -80,7 +80,7 @@
 							<fmt:formatDate value="${job.updateTime }" pattern="yyyy-MM-dd HH:mm:ss"/>
 						</td>
 						<td>
-							<button type="button" class="btn btn-warning">编辑</button>
+							<button type="button" onclick="showEdit('${job.jobId}');" class="btn btn-warning">编辑</button>
 						</td>
 					</tr>
 				</c:forEach>
@@ -130,10 +130,10 @@ $("[name='checkStatus']").bootstrapSwitch();
 		$(".modal-backdrop").not(":first").remove();
 	}
 	
-	function showEdit(){
+	function showEdit(jobId){
 		$("#modal_box").modal("toggle");
 		$("#modal_title").html("编辑任务");
-		$("#page_content").load("../jobTask/showAdd");
+		$("#page_content").load("../jobTask/showEdit?jobId="+jobId);
 		$(".modal-backdrop").not(":first").remove();
 	}
 </script>
