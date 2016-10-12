@@ -8,6 +8,7 @@
 </head>
 <body>
 	<form id="addForm" class="form-horizontal" method="post">
+		<input type="hidden" name="jobId" value="${job.jobId }" >
 		<div class="form-group">
 			<label for="jobName" class="col-sm-3 control-label">任务名称</label>
 			<div class="col-sm-6">
@@ -41,13 +42,13 @@
 
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-8">
-				<button type="button" onclick="doAdd();" class="btn btn-default">保 存</button>
+				<button type="button" onclick="doEdit();" class="btn btn-default">保 存</button>
 			</div>
 		</div>
 	</form>
 	<script type="text/javascript">
 		//添加
-		function doAdd() {
+		function doEdit() {
 			if($.trim($("#jobName").val()) == ""){
 				toastr.info("请输入任务名称");
 				return false;
@@ -68,21 +69,21 @@
 			var params = $("#addForm").serialize();
 			//验证
 			$.ajax({
-				url : "../jobTask/doAdd",
+				url : "../jobTask/doEdit",
 				dataType : "json",
 				type : "post",
 				data : params,
 				success : function(data) {
 					if (data.flag == true) {
-						toastr.success("增加成功");
+						toastr.success("编辑成功");
 						location.reload();
 						return;
 					}else{
-						toastr.error(data.msg,"添加失败");
+						toastr.error(data.msg,"编辑失败");
 					}
 				},
 				error : function() {
-					toastr.error("添加失败");
+					toastr.error("编辑失败");
 				}
 			});
 

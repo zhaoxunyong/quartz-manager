@@ -26,6 +26,9 @@
 		where job_id = #{jobId,jdbcType=VARCHAR}
 	</delete>
 	<insert id="insert" parameterType="com.woyi.mhub.task.domain.ScheduleJob">
+	    <selectKey keyProperty="jobId" order="BEFORE" resultType="java.lang.String">
+			select UUID()
+		</selectKey>
 		insert into task_schedule_job 
 		( job_id, create_time, update_time, job_name, job_group, job_status, cron_expression, description, bean_class )
 		
