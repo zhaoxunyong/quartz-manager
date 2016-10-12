@@ -45,6 +45,11 @@ public class JobTaskService {
 		job.setCreateTime(new Date());
 		scheduleJobMapper.insertSelective(job);
 	}
+	
+	public void updateTask(ScheduleJob job) {
+		job.setUpdateTime(new Date());
+		scheduleJobMapper.updateByPrimaryKeySelective(job);
+	}
 
 	public ScheduleJob getTaskById(String jobId) {
 		return scheduleJobMapper.selectByPrimaryKey(jobId);

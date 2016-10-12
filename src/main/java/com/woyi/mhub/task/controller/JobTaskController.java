@@ -166,6 +166,60 @@ public class JobTaskController {
 	}
 	
 	
+	@RequestMapping("doEdit")
+	@ResponseBody
+	public ResultMsg doEdit(HttpServletRequest request, ScheduleJob scheduleJob) {
+		ResultMsg resultMsg = new ResultMsg();
+		resultMsg.setFlag(true);
+		
+		//验证cron表达式
+		try {
+			CronScheduleBuilder.cronSchedule(scheduleJob.getCronExpression());
+		} catch (Exception e) {
+			e.printStackTrace();
+			resultMsg.setMsg("Cron表达式有误");
+			resultMsg.setFlag(false);
+		}
+		
+		if(resultMsg.isFlag()){
+			
+			//验证job类
+			Object obj = null;
+			try {
+				Class clazz = Class.forName(scheduleJob.getBeanClass());
+				obj = clazz.newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+				resultMsg.setMsg("未找到目标类");
+				resultMsg.setFlag(false);
+			}
+			if(obj != null){
+				//判断是否实现 org.quartz.Job 
+				if(!(obj instanceof Job)){
+					resultMsg.setMsg("此类不符合");
+					resultMsg.setFlag(false);
+				}
+			}
+		}
+		
+		if(resultMsg.isFlag()){
+			try {
+				taskService.updateTask(scheduleJob);
+				if(!taskService.addJob(scheduleJob)){
+					resultMsg.setMsg("启动出错");
+					resultMsg.setFlag(false);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				resultMsg.setMsg("保存失败，检查 name group 组合是否有重复");
+				//resultMsg.setMsg(e.getMessage());
+				resultMsg.setFlag(false);
+			}
+		}
+		return resultMsg;
+	}
+	
+	
 	@RequestMapping("changeStatus")
 	@ResponseBody
 	public ResultMsg changeStatus(HttpServletRequest request, String jobId, String status){
