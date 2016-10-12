@@ -47,7 +47,6 @@
 					<th>描述</th>
 					<th>任务类</th>
 					<th>状态</th>
-					<th>是否同步</th>
 					<th style="width:10%;">创建时间</th>
 					<th style="width:10%;">更新时间</th>
 					<th>操作</th>
@@ -72,7 +71,6 @@
 								</c:otherwise>
 							</c:choose>
 						</td>
-						<td>是</td>
 						<td>
 							<fmt:formatDate value="${job.createTime }" pattern="yyyy-MM-dd HH:mm:ss"/>
 						</td>
