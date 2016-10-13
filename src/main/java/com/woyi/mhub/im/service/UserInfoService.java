@@ -10,6 +10,9 @@
  * @version  V1.0   
  */
 package com.woyi.mhub.im.service;
+
+import com.woyi.mhub.im.domain.UserInfo;
+
 /** 
  * @ClassName  UserInfoService 
  * @Description  TODO
@@ -17,6 +20,8 @@ package com.woyi.mhub.im.service;
  * @date  2016年10月12日 下午5:00:20 
  * 
  */
-public class UserInfoService {
+public interface UserInfoService {
+
+	UserInfo getById(int userId);
 
 }

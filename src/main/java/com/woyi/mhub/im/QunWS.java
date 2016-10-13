@@ -14,9 +14,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.woyi.mhub.im.domain.GroupMessage;
+import com.woyi.mhub.im.domain.GroupUser;
 import com.woyi.mhub.im.domain.SNSMData;
 import com.woyi.mhub.im.domain.SNSMember;
 import com.woyi.mhub.im.domain.SNSUser;
+import com.woyi.mhub.im.domain.UserInfo;
+import com.woyi.mhub.im.service.GroupMessageService;
+import com.woyi.mhub.im.service.GroupService;
+import com.woyi.mhub.im.service.GroupUserService;
+import com.woyi.mhub.im.util.MongoUtils;
 
 
 @Controller

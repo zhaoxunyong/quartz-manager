@@ -7,6 +7,7 @@ public class SNSMember {
 	private String msg;
 
 	private SNSMData data;
+
 	public int getCode() {
 		return code;
 	}
@@ -30,5 +31,5 @@ public class SNSMember {
 	public void setData(SNSMData data) {
 		this.data = data;
 	}
-	
+
 }

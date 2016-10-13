@@ -3,9 +3,9 @@ package com.woyi.mhub.im.domain;
 import java.util.List;
 
 public class SNSMData {
-	
+
 	private SNSUser owner;
-	
+
 	private List<SNSUser> list;
 
 	public SNSUser getOwner() {
